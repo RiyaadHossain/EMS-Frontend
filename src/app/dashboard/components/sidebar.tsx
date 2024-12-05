@@ -1,33 +1,29 @@
+"use client";
 import React from "react";
-import { Menu, Layout } from "antd"
-import {
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
+import { Menu, Layout } from "antd";
+import { useRouter } from "next/navigation";
+import { userRole } from "@/constants/dummy";
+import { getSidebarLinks } from "../utils/getSidebarLinks";
 
-const items = [
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  UserOutlined,
-].map((icon, index) => ({
-  key: String(index + 1),
-  icon: React.createElement(icon),
-  label: `nav ${index + 1}`,
-}));
-
-
+const items = getSidebarLinks(userRole);
 export default function Sidebar() {
+  const router = useRouter();
+
+  const handleClick = ({ key }: { key: string }) =>
+    router.push(`/dashboard/${key}`);
+
   return (
     <Layout.Sider breakpoint="lg" collapsedWidth="0">
-        {/* <div className="demo-logo-vertical text-center text-xl font-bold my-3" >EMS</div> */}
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={["4"]}
-          items={items}
-        />
-      </Layout.Sider>
+      <div className="demo-logo-vertical text-center text-xl font-bold my-5">
+        EMS
+      </div>
+      <Menu
+        theme="dark"
+        mode="inline"
+        defaultSelectedKeys={["/dashboard"]}
+        items={items}
+        onClick={handleClick}
+      />
+    </Layout.Sider>
   );
 }

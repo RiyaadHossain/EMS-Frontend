@@ -1,6 +1,6 @@
 import { Layout, theme } from "antd";
 
-export default function Content() {
+export default function Content({content}) {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -15,7 +15,7 @@ export default function Content() {
           borderRadius: borderRadiusLG,
         }}
       >
-        content
+        {content}
       </div>
     </Layout.Content>
   );
