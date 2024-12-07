@@ -6,17 +6,12 @@ import EMSInput from "@/components/form/Input";
 import EMSCheckbox from "@/components/form/Checkbox";
 
 export default function LogIn() {
-  type FieldType = {
-    username?: string;
-    password?: string;
-    remember?: string;
-  };
 
-  const onFinish: FormProps<FieldType>["onFinish"] = (values: any) => {
+  const onFinish: FormProps["onFinish"] = (values: any) => {
     console.log("Success:", values);
   };
 
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
+  const onFinishFailed: FormProps["onFinishFailed"] = (
     errorInfo: any
   ) => {
     console.log("Failed:", errorInfo);

@@ -1,6 +1,6 @@
 import { Form, Input } from "antd";
 
-export default function EMSInput({ label, name, required, password, disabled }: any) {
+export default function EMSTextarea({ label, name, required, disabled, rows=6 }: any) {
   let rules = [];
   if (required)
     rules = [
@@ -10,7 +10,7 @@ export default function EMSInput({ label, name, required, password, disabled }: 
 
   return (
     <Form.Item label={label} name={name} rules={[...rules]}>
-      {!password ? <Input disabled={disabled} /> : <Input.Password />}
+      <Input.TextArea rows={rows} disabled={disabled} /> 
     </Form.Item>
   );
 }
