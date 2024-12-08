@@ -1,22 +1,19 @@
 
 "use client";
-import { Button, Table, Tag } from "antd";
+import { Button, Select, Table, Tag } from "antd";
+import {PlusCircleFilled} from "@ant-design/icons"
 import { useState } from "react";
-import AddProject from "./Add";
-import EditProject from "./Edit";
-import Link from "next/link";
 import ProjectDetails from "../../components/modals/ProjectDetails";
-import { formatDate } from "@/utils/format";
+import AddTask from "./AddTask";
+import { formatDate, formatString } from "@/utils/format";
+import TaskList from "./TaskList";
+import { PROJECT_STATUS } from "@/enums/project";
 
 export default function ProjectList() {
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState("");
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState("");
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState("");
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
 
   const showDetailsModal = (projectId:string) => {
     setIsDetailsModalOpen(projectId);
@@ -88,21 +85,6 @@ export default function ProjectList() {
       ),
     },
     {
-      title: "Department",
-      dataIndex: "department",
-      key: "department"
-    },
-    {
-      title: "Manager",
-      dataIndex: "manager",
-      key: "manager",
-      render: (text, record) => (
-        <Link href={`/profile/${record.id}`}>
-          {text}
-        </Link>
-      ),
-    },
-    {
       title: "Issue Date",
       dataIndex: "issueDate",
       key: "issueDate",
@@ -129,46 +111,56 @@ export default function ProjectList() {
       },
     },
     {
+      title: "Task",
+      key: "task",
+      render: (_, record) => renderTaskActions(record),
+    },
+    {
       title: "Action",
       key: "action",
       render: (_, record) => renderActions(record),
     },
   ];
 
-  const renderActions = (record: { id: string }) => (
+  const renderTaskActions = (record) => (
     <div>
-      <Button onClick={() => handleEdit(record.id)} style={{ marginRight: 8, color: "yellow" }}>
-        Edit
+      <Button type="link" onClick={() => setIsTaskModalOpen(record.id)} style={{ margin: 0 }}>
+        Task List
       </Button>
-      <Button onClick={() => handleDelete(record.id)} style={{ color: "red" }}>
-        Delete
-      </Button>
+      <Button type="primary" onClick={() => setIsModalOpen(record.id)} shape="circle" icon={<PlusCircleFilled/>}/>
     </div>
   );
 
-  // Sample handlers for Edit and Delete actions
-  const handleEdit = (id: string) => {
-    console.log(`Editing department with ID: ${id}`);
-    setIsEditModalOpen(id)
-    // Add your edit logic here
-  };
+  const handleChange = (record) => {
+    console.log(record);
+  }
 
-  const handleDelete = (id: string) => {
-    console.log(`Deleting department with ID: ${id}`);
-    // Add your delete logic here
-  };
+  const renderActions = (record) => {
+    const options = Object.values(PROJECT_STATUS).map((status) => ({
+      value: status,
+      label: formatString(status)
+    }));
+
+   return <Select
+      defaultValue={options[0]}
+      style={{ width: 120 }}
+      onChange={() => handleChange(record)}
+      options={options}
+    />
+  }
+
+
 
   return (
     <div>
       <h2 className="text-center text-2xl font-bold mb-8">Project List</h2>
       <div className="flex justify-between mb-4">
         <p className="text-xl"><span className="font-semibold">Total:</span> 4</p>
-        <Button type="primary" onClick={showModal}>Add New</Button>
       </div>
       <Table bordered dataSource={dataSource} columns={columns} />;
 
-      <AddProject setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} />
-      <EditProject setIsEditModalOpen={setIsEditModalOpen} isEditModalOpen={isEditModalOpen} /> 
+      <TaskList isModalOpen={isTaskModalOpen} setIsModalOpen={setIsTaskModalOpen} />
+      <AddTask isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
       <ProjectDetails isModalOpen={isDetailsModalOpen} setIsModalOpen={setIsDetailsModalOpen}/>
     </div>
   );

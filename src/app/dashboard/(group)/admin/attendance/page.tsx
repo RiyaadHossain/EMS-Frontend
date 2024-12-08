@@ -5,11 +5,12 @@ import { Table, Badge } from "antd";
 import {
   CheckCircleFilled,
   CloseCircleFilled,
+  LineOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { getTwoDigitDate } from "@/utils/date";
-import { DatePicker } from 'antd';
-
+import { DatePicker } from "antd";
+import { ATTD_STATUS } from "@/enums/attendance";
 
 export default function Attandence() {
   const isAdmin = userRole == USER_ROLE.Admin;
@@ -35,11 +36,11 @@ export default function Attandence() {
       dataIndex: `day${getTwoDigitDate(index + 1)}`,
       key: `day${index + 1}`,
       render: (status: string) => {
-        const icon = status ? (
-          <CheckCircleFilled style={{ color: "green" }} />
-        ) : (
-          <CloseCircleFilled style={{ color: "red" }} />
-        );
+        let icon = <LineOutlined />;
+        if (status == ATTD_STATUS.ATTEND)
+          icon = <CheckCircleFilled style={{ color: "green" }} />;
+        if (status == ATTD_STATUS.NOT_ATTEND)
+          icon = <CloseCircleFilled style={{ color: "red" }} />;
         return <Badge count={icon} />;
       },
     })),
@@ -49,78 +50,77 @@ export default function Attandence() {
     {
       id: 1,
       name: "John Doe",
-      day01: true,
-      day02: false,
-      day03: true,
-      day04: true,
-      day05: true,
-      day06: false,
-      day07: true,
-      day08: true,
-      day09: true,
-      day10: false,
-      day11: true,
-      day12: true,
-      day13: false,
-      day14: true,
-      day15: true,
-      day16: true,
-      day17: false,
-      day18: true,
-      day19: true,
-      day20: true,
-      day21: false,
-      day22: true,
-      day23: false,
-      day24: true,
-      day25: true,
-      day26: false,
-      day27: true,
-      day28: true,
-      day29: true,
-      day30: false,
+      day01: "attend",
+      day02: "not-attend",
+      day03: "attend",
+      day04: "attend",
+      day05: "attend",
+      day06: "not-attend",
+      day07: "attend",
+      day08: "attend",
+      day09: "attend",
+      day10: "not-attend",
+      day11: "attend",
+      day12: "attend",
+      day13: "not-attend",
+      day14: "attend",
+      day15: "attend",
+      day16: "attend",
+      day17: "not-attend",
+      day18: "attend",
+      day19: "attend",
+      day20: "",
+      day21: "",
+      day22: "",
+      day23: "",
+      day24: "",
+      day25: "",
+      day26: "",
+      day27: "",
+      day28: "",
+      day29: "",
+      day30: "",
     },
     {
       id: 2,
       name: "Jane Smith",
-      day01: true,
-      day02: true,
-      day03: true,
-      day04: false,
-      day05: true,
-      day06: true,
-      day07: true,
-      day08: false,
-      day09: true,
-      day10: true,
-      day11: true,
-      day12: false,
-      day13: true,
-      day14: true,
-      day15: true,
-      day16: false,
-      day17: true,
-      day18: true,
-      day19: false,
-      day20: true,
-      day21: true,
-      day22: false,
-      day23: true,
-      day24: true,
-      day25: false,
-      day26: true,
-      day27: true,
-      day28: true,
-      day29: false,
-      day30: true,
+      day01: "attend",
+      day02: "attend",
+      day03: "attend",
+      day04: "not-attend",
+      day05: "attend",
+      day06: "attend",
+      day07: "attend",
+      day08: "not-attend",
+      day09: "attend",
+      day10: "attend",
+      day11: "attend",
+      day12: "not-attend",
+      day13: "attend",
+      day14: "attend",
+      day15: "attend",
+      day16: "not-attend",
+      day17: "attend",
+      day18: "attend",
+      day19: "not-attend",
+      day20: "",
+      day21: "",
+      day22: "",
+      day23: "",
+      day24: "",
+      day25: "",
+      day26: "",
+      day27: "",
+      day28: "",
+      day29: "",
+      day30: "",
     },
     // Add more employees as needed
   ];
 
-
-const onChange = (date, dateString) => {
-  console.log(date, dateString);
-};
+  const onChange = (date, dateString) => {
+    console.log(date, dateString);
+  };
 
   return (
     <div>
@@ -131,9 +131,7 @@ const onChange = (date, dateString) => {
         <p className="text-xl">
           <span className="font-semibold">Monthe:</span> February
         </p>
-        {isAdmin && (
-          <DatePicker onChange={onChange} picker="month" />
-        )}
+        {isAdmin && <DatePicker onChange={onChange} picker="month" />}
       </div>
       <Table bordered dataSource={dataSource} columns={columns} />;
     </div>

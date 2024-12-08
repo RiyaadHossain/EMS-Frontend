@@ -1,6 +1,8 @@
 import { Typography, List, Tag, Button } from "antd";
-import { ArrowRightOutlined } from '@ant-design/icons';
+import { ArrowRightOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import { useState } from "react";
+import ProjectDetails from "./modals/ProjectDetails";
 
 const projects = [
   { name: "Project Alpha", status: "In Progress", id: 1 },
@@ -15,6 +17,13 @@ const statusColors = {
 };
 
 const RunningProjects = () => {
+  const [isModalOpen, setIsModalOpen] = useState("");
+
+  const showModal = (id: number|string) => {
+    id = id.toString()
+    setIsModalOpen(id);
+  };
+
   return (
     <>
       <Typography.Title level={4}>Running Projects</Typography.Title>
@@ -24,14 +33,7 @@ const RunningProjects = () => {
         renderItem={(project) => (
           <List.Item>
             <List.Item.Meta
-              title={
-                <Link
-                  href={`/dashboard/admin/projects-list`}
-                  style={{ color: "#1890ff", fontWeight: "bold" }}
-                >
-                  {project.name}
-                </Link>
-              }
+              title={<Button type="link" style={{padding:0}} onClick={() => showModal(project.id)}>{project.name}</Button >}
               description={
                 <Tag color={statusColors[project.status]}>{project.status}</Tag>
               }
@@ -39,7 +41,15 @@ const RunningProjects = () => {
           </List.Item>
         )}
       />
-      <Link href="/dashboard/admin/projects-list"><Button type="link" icon={<ArrowRightOutlined/>} iconPosition="end">See All</Button></Link>
+      <Link href="/dashboard/admin/projects-list">
+        <Button style={{padding:0}} type="link" icon={<ArrowRightOutlined />} iconPosition="end">
+          See All
+        </Button>
+      </Link>
+      <ProjectDetails
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+      />
     </>
   );
 };

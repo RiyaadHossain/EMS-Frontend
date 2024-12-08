@@ -1,8 +1,8 @@
 "use client"
 import { Row, Col, Card } from "antd"
-import WelcomeSection from "./components/WelcomeSection";
+import WelcomeSection from "../components/WelcomeSection";
 import StatsCards from "./components/StatsCard";
-import RunningProjects from "./components/RunningProject";
+import RunningProjects from "../components/RunningProject";
 import ActiveManager from "./components/ActiveManager";
 import SalaryChart from "./components/SalaryChart";
 

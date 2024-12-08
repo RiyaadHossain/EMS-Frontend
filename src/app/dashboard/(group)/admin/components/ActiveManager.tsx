@@ -28,7 +28,7 @@ const ActiveManager = () => {
           </List.Item>
         )}
       />
-       <Link href="/dashboard/admin/manager-list"><Button type="link" icon={<ArrowRightOutlined/>} iconPosition="end">See All</Button></Link>
+       <Link href="/dashboard/admin/manager-list"><Button style={{padding:0}} type="link" icon={<ArrowRightOutlined/>} iconPosition="end">See All</Button></Link>
     </>
   );
 };
