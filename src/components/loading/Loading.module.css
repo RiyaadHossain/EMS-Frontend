@@ -1,0 +1,34 @@
+/* Center the loading spinner */
+.loadingWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+    flex-direction: column;
+  }
+  
+  /* The actual spinner style */
+  .spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #1890ff; /* Blue color */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+  }
+  
+  /* The loading text */
+  .text {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1890ff;
+  }
+  
+  /* Animation for spinning */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  

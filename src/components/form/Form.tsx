@@ -1,16 +1,16 @@
 import { Button, Form} from "antd";
 
-export default function EMSForm({ children, intialValues, title, onFinish, onFinishFailed, border = true }: any) {
+export default function EMSForm({width = "", children, initialValues, title, onFinish, onFinishFailed, border = true }: any) {
 
   return (
-    <div className={`${border && "border"} rounded-md p-5`}>
+    <div className={`${border && "border"} rounded-md p-5 ${width}`}>
       <h3 className="text-center text-2xl font-semibold mb-2">{title} Form</h3>
 
       <Form
         layout="vertical"
         name="basic"
         style={{ width: "100%" }}
-        initialValues={intialValues}
+        initialValues={initialValues}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"

@@ -2,10 +2,12 @@
 import React from "react";
 import { Menu, Layout } from "antd";
 import { useRouter } from "next/navigation";
-import { userRole } from "@/constants/dummy";
 import { getSidebarLinks } from "../utils/getSidebarLinks";
+import { getUserInfo } from "@/helpers/jwt";
 
-const items = getSidebarLinks(userRole);
+const userInfo = getUserInfo()
+
+const items = getSidebarLinks(userInfo.role);
 export default function Sidebar() {
   const router = useRouter();
 

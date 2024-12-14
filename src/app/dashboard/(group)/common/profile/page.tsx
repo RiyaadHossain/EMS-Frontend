@@ -2,30 +2,29 @@
 import React, { useState } from "react";
 import { Col, Row, Avatar, Typography, Divider, Button } from "antd";
 import EditProfile from "./Edit";
+import { useQuery } from "@tanstack/react-query";
+import { getMyProfile } from "@/queries/profile";
+import { QueryKey } from "@/constants/queryKey";
+import Loading from "@/components/loading/Loading";
+import { USER_ROLE } from "@/enums/userRole";
+import { getUserInfo } from "@/helpers/jwt";
 
 const { Title, Text } = Typography;
 
-// Sample profile data
-const profileData = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  phone: "+1 123-456-7890",
-  department: "IT",
-  address: "123 Main St, City, Country",
-  joinedAt: "January 15, 2021",
-  projectsWorkedOn: ["Project Alpha", "Project Beta", "Project Gamma"],
-  profilePictureUrl: "https://example.com/profile-pic.jpg",
-};
-
 export default function Profile() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { isPending, data } = useQuery({ queryFn: getMyProfile, queryKey: [QueryKey.profile] })
+  if (isPending) return <Loading />
+  
+  const profileData = (data?.data);
+  const role = getUserInfo()?.role
 
   return (
     <div style={{ padding: "24px", maxWidth: "900px", margin: "auto" }}>
       <Row justify="center">
         <Col span={24} style={{ textAlign: "center" }}>
           <Avatar size={128}><span className="text-5xl font-bold">{profileData.name.slice(0,1)}</span></Avatar>
-          <Title z style={{ margin: "16px 0", fontWeight: "bold" }}>
+          <Title style={{ margin: "16px 0", fontWeight: "bold" }}>
             {profileData.name}
           </Title>
         </Col>
@@ -38,7 +37,7 @@ export default function Profile() {
         style={{ marginBottom: "16px" }}
       >
         <Col>
-          <Title z>Profile Details</Title>
+          <Title>Profile Details</Title>
         </Col>
         <Col>
           <Button type="primary" onClick={() => setIsEditModalOpen(true)}>
@@ -83,18 +82,18 @@ export default function Profile() {
       </Row>
 
       <Divider />
-      <Row>
+    {role == USER_ROLE.Manager &&  <Row>
         <Col span={24}>
-          <Title z>Projects Worked On</Title>
+          <Title>Projects Worked On</Title>
           <ul>
-            {profileData.projectsWorkedOn.map((project, index) => (
+            {profileData?.projects?.map((project, index) => (
               <li key={index}>
-                <Text>{project}</Text>
+                <Text>{project?.name}</Text>
               </li>
             ))}
           </ul>
         </Col>
-      </Row>
+      </Row>}
 
       <EditProfile
         isEditModalOpen={isEditModalOpen}

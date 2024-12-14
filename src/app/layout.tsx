@@ -2,15 +2,17 @@ import type { Metadata } from "next";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
+import { ReactQueryClientProvider } from "@/lib/queryClient";
 
 const customTheme = {
-//   token: {
-//     colorPrimary: "#1DA57A",
-//     colorSuccess: "#52c41a",
-//     colorError: "#f5222d",
-//     colorWarning: "#faad14",
-//     colorInfo: "#1890ff",
-//   },
+  //   token: {
+  //     colorPrimary: "#1DA57A",
+  //     colorSuccess: "#52c41a",
+  //     colorError: "#f5222d",
+  //     colorWarning: "#faad14",
+  //     colorInfo: "#1890ff",
+  //   },
 };
 
 export const metadata: Metadata = {
@@ -26,9 +28,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AntdRegistry>
-          <ConfigProvider theme={customTheme}>{children}</ConfigProvider>
-        </AntdRegistry>
+        <ReactQueryClientProvider>
+          <AntdRegistry>
+            <ConfigProvider theme={customTheme}>
+              <Toaster position="top-center" reverseOrder={false} />
+              {children}
+            </ConfigProvider>
+          </AntdRegistry>
+        </ReactQueryClientProvider>
       </body>
     </html>
   );

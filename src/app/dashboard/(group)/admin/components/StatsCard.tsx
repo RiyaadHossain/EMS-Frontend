@@ -1,14 +1,24 @@
 import { Card, Col, Row, Typography } from 'antd';
-import { TeamOutlined, ProjectOutlined, UserOutlined, ApartmentOutlined } from '@ant-design/icons';
-
-const stats = [
-  { title: 'Departments', count: 5, icon: <ApartmentOutlined style={{ fontSize: '32px', color: '#1890ff' }} /> },
-  { title: 'Projects', count: 12, icon: <ProjectOutlined style={{ fontSize: '32px', color: '#faad14' }} /> },
-  { title: 'Managers', count: 4, icon: <UserOutlined style={{ fontSize: '32px', color: '#52c41a' }} /> },
-  { title: 'Employees', count: 50, icon: <TeamOutlined style={{ fontSize: '32px', color: '#ff4d4f' }} /> },
-];
+import { useQuery } from '@tanstack/react-query';
+import { getDashboardStats } from '@/queries/dashboard';
+import { QueryKey } from '@/constants/queryKey';
+import toast from 'react-hot-toast';
+import { getCardStats } from '../utils/getStatsIcon';
+import Loading from '@/components/loading/Loading';
 
 const StatsCards = () => {
+
+  const { isPending, isError, data } = useQuery({ queryFn: getDashboardStats, queryKey: [QueryKey.dashboard] })
+  
+  if (isPending)
+    return <Loading/>
+  
+  if (isError)
+    toast.error("Something went wrong!")
+  
+  const stats = getCardStats(data.data || {})
+
+
   return (
     <Row gutter={16}>
       {stats.map(({ title, count, icon }, index) => (

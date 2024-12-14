@@ -1,20 +1,35 @@
 import EMSForm from "@/components/form/Form";
 import EMSTextarea from "@/components/form/Textarea";
-import type { FormProps } from "antd";
+import { QueryKey } from "@/constants/queryKey";
+import { addAnnouncement } from "@/queries/announcement";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Modal } from "antd";
+import toast from "react-hot-toast";
 
 export default function AddAnnouncement({ isModalOpen, setIsModalOpen }) {
+  const queryClient = useQueryClient()
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+  const mutation = useMutation({
+    mutationFn: addAnnouncement, onSuccess: (res) => {
+      if (!res.success) {
+        toast.error(res.message);
+        return;
+      }
+      queryClient.invalidateQueries({queryKey: [QueryKey.announcement]})
+      toast.success(res.message);
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    }
+  })
 
-  const onFinish: FormProps["onFinish"] = (values: any) => {
-      console.log("Success:", values);
+  const onFinish = (values: any) => {
+    mutation.mutate(values)
+
       setIsModalOpen(false)
   };
 
-  const onFinishFailed: FormProps["onFinishFailed"] = (errorInfo: any) => {
+  const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
 
@@ -22,7 +37,7 @@ export default function AddAnnouncement({ isModalOpen, setIsModalOpen }) {
     <Modal
       open={isModalOpen}
       footer={[]}
-      onCancel={handleCancel}
+      onCancel={() => setIsModalOpen(false)}
     >
       <EMSForm
         border={null}
@@ -32,7 +47,7 @@ export default function AddAnnouncement({ isModalOpen, setIsModalOpen }) {
       >
         <EMSTextarea
           label="Announcement"
-          name="announcement"
+          name="text"
           required={true}
         />
       </EMSForm>

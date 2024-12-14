@@ -11,7 +11,7 @@ const { Footer } = Layout;
 const DashboardLayout: React.FC = ({children}:any) => {
 
   return (
-    <Layout  style={{'min-height': '100vh'}}>
+    <Layout  style={{minHeight: '100vh'}}>
       <Sidebar/>
       <Layout>
         <Header/>

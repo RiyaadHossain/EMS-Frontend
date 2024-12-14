@@ -1,4 +1,4 @@
-import { getTwoDigitDate } from "@/utils/date";
+import { getTwoDigitDate } from "@/utils/format";
 import { Table, Badge, Typography } from "antd";
 import {
   CheckCircleFilled,

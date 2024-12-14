@@ -5,7 +5,7 @@ import {
   ProjectOutlined,
   CalendarOutlined,
   TeamOutlined,
-  DollarCircleOutlined,
+  // DollarCircleOutlined,
   FileTextOutlined,
   ProfileOutlined,
   NotificationOutlined
@@ -22,7 +22,7 @@ export const adminLinks = [
   { icon: CalendarOutlined, label: "Attendance", path: "admin/attendance" },
   { icon: TeamOutlined, label: "Managers", path: "admin/manager-list" },
   { icon: UserOutlined, label: "Employees", path: "common/employee-list" },
-  { icon: DollarCircleOutlined, label: "Salary", path: "admin/salary" },
+  // { icon: DollarCircleOutlined, label: "Salary", path: "admin/salary" },
   { icon: NotificationOutlined, label: "Announcement", path: "common/announcement" },
   { icon: ProfileOutlined, label: "Profile", path: "common/profile" },
 ];
@@ -37,7 +37,7 @@ export const managerLinks = [
 
 export const employeeLinks = [
   { icon: DashboardOutlined, label: "Dashboard", path: "/" },
-  { icon: ProjectOutlined, label: "Projects", path: "common/project-list" },
+  // { icon: ProjectOutlined, label: "Projects", path: "common/project-list" },
   { icon: FileTextOutlined, label: "Tasks", path: "employee/task-list" },
   { icon: NotificationOutlined, label: "Announcement", path: "common/announcement" },
   { icon: ProfileOutlined, label: "Profile", path: "common/profile" },

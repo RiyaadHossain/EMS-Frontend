@@ -3,12 +3,10 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useState } from "react";
 import ProjectDetails from "./modals/ProjectDetails";
-
-const projects = [
-  { name: "Project Alpha", status: "In Progress", id: 1 },
-  { name: "Project Beta", status: "Completed", id: 2 },
-  { name: "Project Gamma", status: "To Do", id: 3 },
-];
+import { useQuery } from "@tanstack/react-query";
+import Loading from "@/components/loading/Loading";
+import { getProjects } from "@/queries/project";
+import { QueryKey } from "@/constants/queryKey";
 
 const statusColors = {
   "In Progress": "processing",
@@ -19,10 +17,10 @@ const statusColors = {
 const RunningProjects = () => {
   const [isModalOpen, setIsModalOpen] = useState("");
 
-  const showModal = (id: number|string) => {
-    id = id.toString()
-    setIsModalOpen(id);
-  };
+  const { isPending, data } = useQuery({ queryFn: () => getProjects(), queryKey: [QueryKey.project] })
+  if (isPending) return <Loading />
+
+  const projects = (data?.data?.data);
 
   return (
     <>
@@ -30,10 +28,10 @@ const RunningProjects = () => {
       <List
         itemLayout="horizontal"
         dataSource={projects}
-        renderItem={(project) => (
+        renderItem={(project:any) => (
           <List.Item>
             <List.Item.Meta
-              title={<Button type="link" style={{padding:0}} onClick={() => showModal(project.id)}>{project.name}</Button >}
+              title={<Button type="link" style={{padding:0}} onClick={() => setIsModalOpen(project.id)}>{project.projectName}</Button >}
               description={
                 <Tag color={statusColors[project.status]}>{project.status}</Tag>
               }

@@ -1,125 +1,79 @@
 "use client";
-import { userRole } from "@/constants/dummy";
 import { USER_ROLE } from "@/enums/userRole";
-import { Table, Badge } from "antd";
+import { Table, Badge, Button } from "antd";
 import {
   CheckCircleFilled,
   CloseCircleFilled,
   LineOutlined,
 } from "@ant-design/icons";
-import Link from "next/link";
-import { getTwoDigitDate } from "@/utils/date";
+import { getTwoDigitDate } from "@/utils/format";
 import { DatePicker } from "antd";
-import { ATTD_STATUS } from "@/enums/attendance";
+import { useQuery } from "@tanstack/react-query";
+import { getEmployeeSheet } from "@/queries/attendance";
+import { QueryKey } from "@/constants/queryKey";
+import Loading from "@/components/loading/Loading";
+import { getUserInfo } from "@/helpers/jwt";
+import { useState } from "react";
+import EmployeeDetails from "../../components/modals/EmployeeDetails";
+import { getDay, getDaysInMonth, getMonthName } from "@/utils/date";
 
 export default function Attandence() {
-  const isAdmin = userRole == USER_ROLE.Admin;
+  const userInfo = getUserInfo();
+  const isAdmin = userInfo.role == USER_ROLE.Admin;
+
+  const mon = (new Date()).getMonth()
+  const [month, setMonth] = useState(mon);
+  const [isEmpModalOpen, setIsEmpModalOpen] = useState("");
+
+  const { isPending, data } = useQuery({
+    queryFn: () => getEmployeeSheet(month),
+    queryKey: [QueryKey.attendance,month],
+    enabled: !!month
+  });
 
   const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-    },
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text, record) => (
-        <Link href={`/dashboard/common/employee-details/${record.id}`}>
-          {text}
-        </Link>
-      ),
+      render: (text, record) => {
+        return record.employeeId ? (
+          <Button
+            type="link"
+            style={{ margin: 0 }}
+            onClick={() => setIsEmpModalOpen(record.employeeId)}
+          >
+            {text}
+          </Button>
+        ) : (
+          <Button type="link" disabled>
+            {text}
+          </Button>
+        );
+      },
     },
-    ...Array.from({ length: 30 }, (_, index) => ({
+    ...Array.from({ length: getDaysInMonth() }, (_, index) => ({
       title: getTwoDigitDate(index + 1),
       dataIndex: `day${getTwoDigitDate(index + 1)}`,
       key: `day${index + 1}`,
       render: (status: string) => {
         let icon = <LineOutlined />;
-        if (status == ATTD_STATUS.ATTEND)
-          icon = <CheckCircleFilled style={{ color: "green" }} />;
-        if (status == ATTD_STATUS.NOT_ATTEND)
-          icon = <CloseCircleFilled style={{ color: "red" }} />;
+        if (getDay() < index + 1) return <Badge count={icon} />;
+
+        if (status) icon = <CheckCircleFilled style={{ color: "green" }} />;
+        else icon = <CloseCircleFilled style={{ color: "red" }} />;
         return <Badge count={icon} />;
       },
     })),
   ];
 
-  const dataSource = [
-    {
-      id: 1,
-      name: "John Doe",
-      day01: "attend",
-      day02: "not-attend",
-      day03: "attend",
-      day04: "attend",
-      day05: "attend",
-      day06: "not-attend",
-      day07: "attend",
-      day08: "attend",
-      day09: "attend",
-      day10: "not-attend",
-      day11: "attend",
-      day12: "attend",
-      day13: "not-attend",
-      day14: "attend",
-      day15: "attend",
-      day16: "attend",
-      day17: "not-attend",
-      day18: "attend",
-      day19: "attend",
-      day20: "",
-      day21: "",
-      day22: "",
-      day23: "",
-      day24: "",
-      day25: "",
-      day26: "",
-      day27: "",
-      day28: "",
-      day29: "",
-      day30: "",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      day01: "attend",
-      day02: "attend",
-      day03: "attend",
-      day04: "not-attend",
-      day05: "attend",
-      day06: "attend",
-      day07: "attend",
-      day08: "not-attend",
-      day09: "attend",
-      day10: "attend",
-      day11: "attend",
-      day12: "not-attend",
-      day13: "attend",
-      day14: "attend",
-      day15: "attend",
-      day16: "not-attend",
-      day17: "attend",
-      day18: "attend",
-      day19: "not-attend",
-      day20: "",
-      day21: "",
-      day22: "",
-      day23: "",
-      day24: "",
-      day25: "",
-      day26: "",
-      day27: "",
-      day28: "",
-      day29: "",
-      day30: "",
-    },
-    // Add more employees as needed
-  ];
+  const dataSource = data?.data;
 
-  const onChange = (date, dateString) => {
-    console.log(date, dateString);
+  if (isPending) return <Loading />;
+
+  const onChange = (date) => {
+    const month = date.month()
+    setMonth(() => month)
   };
 
   return (
@@ -129,11 +83,21 @@ export default function Attandence() {
       </h2>
       <div className="flex justify-between mb-4">
         <p className="text-xl">
-          <span className="font-semibold">Monthe:</span> February
+          <span className="font-semibold">Month:</span> {getMonthName(month)}
         </p>
         {isAdmin && <DatePicker onChange={onChange} picker="month" />}
       </div>
-      <Table bordered dataSource={dataSource} columns={columns} />;
+      <Table
+        bordered
+        dataSource={dataSource}
+        columns={columns}
+        scroll={{ x: "max-content" }}
+      />
+      ;
+      <EmployeeDetails
+        isModalOpen={isEmpModalOpen}
+        setIsModalOpen={setIsEmpModalOpen}
+      />
     </div>
   );
 }

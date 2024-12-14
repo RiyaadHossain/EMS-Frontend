@@ -1,16 +1,23 @@
 import { Row, Col, Typography, Button, Space, Statistic } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { userRole } from "@/constants/dummy";
 import { USER_ROLE } from "@/enums/userRole";
+import { getUserInfo } from "@/helpers/jwt";
+import { useQuery } from "@tanstack/react-query";
+import { getMyProfile } from "@/queries/profile";
+import { QueryKey } from "@/constants/queryKey";
+import Loading from "@/components/loading/Loading";
 
 const WelcomeSection = () => {
-  //@ts-ignore
-  const isAdmin = userRole==USER_ROLE.Admin
+  const { isPending, data } = useQuery({ queryFn: getMyProfile, queryKey: [QueryKey.profile] })
+  if (isPending) return <Loading />
+  const {role} = getUserInfo()
+
+  const isAdmin = role==USER_ROLE.Admin
 
   return (
     <Row justify="space-between" align="middle">
       <Col>
-        <Typography.Title level={2}>Welcome, John Doe</Typography.Title>
+        <Typography.Title level={2}>Welcome, {data?.name}</Typography.Title>
       </Col>
       <Col>
         {isAdmin ? (

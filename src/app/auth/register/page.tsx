@@ -1,33 +1,42 @@
 "use client";
 import React from "react";
 import EMSForm from "@/components/form/Form";
-import type { FormProps } from "antd";
 import EMSInput from "@/components/form/Input";
+import { useMutation } from "@tanstack/react-query";
+import { registerUser } from "@/queries/user";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { PAGE_URL } from "@/enums/pageUrl";
 
 export default function Register() {
-    type FieldType = {
-        username?: string;
-        password?: string;
-        remember?: string;
-      };
-    
-      const onFinish: FormProps<FieldType>["onFinish"] = (values: any) => {
-        console.log("Success:", values);
-      };
-    
-      const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-        errorInfo: any
-      ) => {
-        console.log("Failed:", errorInfo);
-      };
-    
+  const router = useRouter();
+
+  const register = useMutation({
+    mutationFn: registerUser,
+    onSuccess: (res) => {
+      if (!res.success) {
+        toast.error(res.message);
+        return;
+      }
+
+      toast.success(res.message);
+      router.push(PAGE_URL.Login);
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  const onFinishFailed = (errorInfo) =>
+    toast.error(errorInfo.message || "Something went wrong");
 
   return (
-    <div className="flex items-center justify-center h-full">
+    <div className="flex items-center justify-center h-[100vh]">
       <EMSForm
         title="Register"
-        onFinish={onFinish}
+        onFinish={(data) => register.mutate(data)}
         onFinishFailed={onFinishFailed}
+        width="w-1/3"
       >
         <EMSInput label="Company Name" name="companyName" required={true} />
         <EMSInput label="Email" name="email" required={true} />

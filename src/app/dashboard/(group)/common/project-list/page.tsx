@@ -1,75 +1,52 @@
-
 "use client";
 import { Button, Table, Tag } from "antd";
 import { useState } from "react";
 import AddProject from "./Add";
 import EditProject from "./Edit";
-import Link from "next/link";
 import ProjectDetails from "../../components/modals/ProjectDetails";
 import { formatDate } from "@/utils/format";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getProjects, removeProject } from "@/queries/project";
+import { QueryKey } from "@/constants/queryKey";
+import Loading from "@/components/loading/Loading";
+import toast from "react-hot-toast";
+import EmployeeDetails from "../../components/modals/EmployeeDetails";
 
 export default function ProjectList() {
-
+  const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState("");
+  const [isEmpDetailsModalOpen, setIsEmpDetailsModalOpen] = useState("");
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState("");
+
+  const { isPending, data } = useQuery({
+    queryFn: () => getProjects(),
+    queryKey: [QueryKey.project],
+  });
+
+  const deleteProject = useMutation({
+    mutationFn: async ({ id }: any) => removeProject(id),
+    onSuccess: (res: any) => {
+      if (!res.success) {
+        toast.error(res.message);
+        return;
+      }
+
+      queryClient.invalidateQueries({ queryKey: [QueryKey.project] });
+      toast.success(res.message);
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  if (isPending) return <Loading />;
+
+  const projects = data.data.data;
 
   const showModal = () => {
     setIsModalOpen(true);
   };
-
-  const showDetailsModal = (projectId:string) => {
-    setIsDetailsModalOpen(projectId);
-  };
-
-  const dataSource = [
-    {
-      id: "1",
-      projectName: "Employee Management System",
-      department: "Human Resources",
-      manager: "John Doe",
-      issueDate: "2024-12-01",
-      expectedEndDate: "2025-06-01",
-      status: "To Do",
-    },
-    {
-      id: "2",
-      projectName: "Finance Tracker",
-      department: "Finance",
-      manager: "Jane Smith",
-      issueDate: "2024-11-15",
-      expectedEndDate: "2025-02-15",
-      status: "In Progress",
-    },
-    {
-      id: "3",
-      projectName: "Inventory System",
-      department: "Engineering",
-      manager: "Michael Brown",
-      issueDate: "2024-10-10",
-      expectedEndDate: "2025-10-10",
-      status: "Completed",
-    },
-    {
-      id: "4",
-      projectName: "Marketing Campaign Tracker",
-      department: "Marketing",
-      manager: "Emily Davis",
-      issueDate: "2024-09-20",
-      expectedEndDate: "2025-05-20",
-      status: "In Progress",
-    },
-    {
-      id: "5",
-      projectName: "Sales Dashboard",
-      department: "Sales",
-      manager: "William Johnson",
-      issueDate: "2024-08-01",
-      expectedEndDate: "2025-01-01",
-      status: "To Do",
-    },
-  ];
-
 
   const columns = [
     {
@@ -82,7 +59,11 @@ export default function ProjectList() {
       dataIndex: "projectName",
       key: "projectName",
       render: (text, record) => (
-        <Button type='link' style={{padding:0}} onClick={() =>showDetailsModal(record.id)}>
+        <Button
+          type="link"
+          style={{ padding: 0 }}
+          onClick={() => setIsDetailsModalOpen(record.id)}
+        >
           {text}
         </Button>
       ),
@@ -90,40 +71,44 @@ export default function ProjectList() {
     {
       title: "Department",
       dataIndex: "department",
-      key: "department"
+      key: "department",
     },
     {
       title: "Manager",
       dataIndex: "manager",
       key: "manager",
       render: (text, record) => (
-        <Link href={`/profile/${record.id}`}>
-          {text}
-        </Link>
+        <Button
+        type="link"
+        style={{ padding: 0 }}
+        onClick={() => setIsEmpDetailsModalOpen(record.employeeId)}
+      >
+        {text}
+      </Button>
       ),
     },
     {
       title: "Issue Date",
       dataIndex: "issueDate",
       key: "issueDate",
-      render: (date) => formatDate(date)
+      render: (date) => formatDate(date),
     },
     {
       title: "Expected End Date",
       dataIndex: "expectedEndDate",
       key: "expectedEndDate",
-      render: (date) => formatDate(date)
+      render: (date) => formatDate(date),
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
       render: (status) => {
-        let color = 'green';
-        if (status === 'To Do') {
-          color = 'red';
-        } else if (status === 'In Progress') {
-          color = 'orange';
+        let color = "green";
+        if (status === "To Do") {
+          color = "red";
+        } else if (status === "In Progress") {
+          color = "orange";
         }
         return <Tag color={color}>{status}</Tag>;
       },
@@ -137,39 +122,43 @@ export default function ProjectList() {
 
   const renderActions = (record: { id: string }) => (
     <div>
-      <Button onClick={() => handleEdit(record.id)} style={{ marginRight: 8, color: "yellow" }}>
+      <Button
+        onClick={() => setIsEditModalOpen(record.id)}
+        style={{ marginRight: 8, color: "yellow" }}
+      >
         Edit
       </Button>
-      <Button onClick={() => handleDelete(record.id)} style={{ color: "red" }}>
+      <Button onClick={() => deleteProject.mutate({id:record.id})} style={{ color: "red" }}>
         Delete
       </Button>
     </div>
   );
 
-  // Sample handlers for Edit and Delete actions
-  const handleEdit = (id: string) => {
-    console.log(`Editing department with ID: ${id}`);
-    setIsEditModalOpen(id)
-    // Add your edit logic here
-  };
-
-  const handleDelete = (id: string) => {
-    console.log(`Deleting department with ID: ${id}`);
-    // Add your delete logic here
-  };
-
   return (
     <div>
       <h2 className="text-center text-2xl font-bold mb-8">Project List</h2>
       <div className="flex justify-between mb-4">
-        <p className="text-xl"><span className="font-semibold">Total:</span> 4</p>
-        <Button type="primary" onClick={showModal}>Add New</Button>
+        <p className="text-xl">
+          <span className="font-semibold">Total:</span> 4
+        </p>
+        <Button type="primary" onClick={showModal}>
+          Add New
+        </Button>
       </div>
-      <Table bordered dataSource={dataSource} columns={columns} />;
-
+      <Table bordered dataSource={projects} columns={columns} />;
       <AddProject setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} />
-      <EditProject setIsEditModalOpen={setIsEditModalOpen} isEditModalOpen={isEditModalOpen} /> 
-      <ProjectDetails isModalOpen={isDetailsModalOpen} setIsModalOpen={setIsDetailsModalOpen}/>
+      <EditProject
+        setIsEditModalOpen={setIsEditModalOpen}
+        isEditModalOpen={isEditModalOpen}
+      />
+      <ProjectDetails
+        isModalOpen={isDetailsModalOpen}
+        setIsModalOpen={setIsDetailsModalOpen}
+      />
+      <EmployeeDetails
+        isModalOpen={isEmpDetailsModalOpen}
+        setIsModalOpen={setIsEmpDetailsModalOpen}
+      />
     </div>
   );
 }

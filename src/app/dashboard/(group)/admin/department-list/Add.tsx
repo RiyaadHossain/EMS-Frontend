@@ -1,29 +1,46 @@
 import EMSForm from "@/components/form/Form";
 import EMSInput from "@/components/form/Input";
-import type { FormProps } from "antd";
+import { QueryKey } from "@/constants/queryKey";
+import { addDepartment } from "@/queries/department";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Modal } from "antd";
+import toast from "react-hot-toast";
 
 export default function AddDepartment({ isModalOpen, setIsModalOpen }) {
+  const ueryClient= useQueryClient()
+
+  const addDept = useMutation({
+    mutationFn: addDepartment,
+    onSuccess: (res) => {
+      if (!res.success) {
+        toast.error(res.message);
+        return;
+      }
+
+      ueryClient.invalidateQueries({queryKey:[QueryKey.department]})
+      toast.success(res.message);
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const onFinish: FormProps["onFinish"] = (values: any) => {
-      console.log("Success:", values);
-      setIsModalOpen(false)
+  const onFinish = (values: any) => {
+    addDept.mutate(values)
+    setIsModalOpen(false);
   };
 
-  const onFinishFailed: FormProps["onFinishFailed"] = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
+  const onFinishFailed = () => {
+    toast.error("Something went wrong")
+    setIsModalOpen(false)
   };
 
   return (
-    <Modal
-      open={isModalOpen}
-      footer={[]}
-      onCancel={handleCancel}
-    >
+    <Modal open={isModalOpen} footer={[]} onCancel={handleCancel}>
       <EMSForm
         border={null}
         title="Add Department"
@@ -31,8 +48,8 @@ export default function AddDepartment({ isModalOpen, setIsModalOpen }) {
         onFinishFailed={onFinishFailed}
       >
         <EMSInput
-          label="DepartmentName"
-          name="departmentName"
+          label="Name"
+          name="name"
           required={true}
         />
       </EMSForm>

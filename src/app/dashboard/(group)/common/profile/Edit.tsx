@@ -1,34 +1,56 @@
 import EMSForm from "@/components/form/Form";
 import EMSInput from "@/components/form/Input";
-import type { FormProps } from "antd";
+import Loading from "@/components/loading/Loading";
+import { QueryKey } from "@/constants/queryKey";
+import { getMyProfile, updateProfile } from "@/queries/profile";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Modal } from "antd";
+import toast from "react-hot-toast";
 
 export default function EditProfile({ isEditModalOpen, setIsEditModalOpen }) {
-  const handleCancel = () => {
+  const queryClient = useQueryClient()
+
+  const { isPending, data } = useQuery({
+    queryFn: getMyProfile,
+    queryKey: [QueryKey.profile],
+  });
+  const updateProMutation = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: (res) => {
+      if (!res.success) {
+        toast.error(res.message);
+        return;
+      }
+      queryClient.invalidateQueries({queryKey: [QueryKey.profile]})
+      toast.success(res.message);
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
+
+  if (isPending) return <Loading />;
+
+  const onFinish = (values: any) => {
+    updateProMutation.mutate(values)
     setIsEditModalOpen(false);
   };
 
-  const onFinish: FormProps["onFinish"] = (values: any) => {
-    console.log("Success:", values);
-    setIsEditModalOpen(false);
-  };
-
-  const onFinishFailed: FormProps["onFinishFailed"] = (errorInfo: any) => {
+  const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
-    
-    const initialValues = {
-        name: "Riyad",
-        email: "he@g.com",
-        phone: "023423",
-        address: "23423423"
-    }
 
+  const initialValues = data?.data;
 
   return (
-    <Modal open={isEditModalOpen} footer={[]} onCancel={handleCancel}>
+    <Modal
+      open={isEditModalOpen}
+      footer={[]}
+      onCancel={() => setIsEditModalOpen(false)}
+    >
       <EMSForm
-        intialValues={initialValues}
+        initialValues={initialValues}
         border={null}
         title="Edit Profile"
         onFinish={onFinish}
@@ -38,7 +60,6 @@ export default function EditProfile({ isEditModalOpen, setIsEditModalOpen }) {
         <EMSInput disabled label="Email" name="email" required={true} />
         <EMSInput label="Phone" name="phone" required={true} />
         <EMSInput label="Address" name="address" required={true} />
-        
       </EMSForm>
     </Modal>
   );
