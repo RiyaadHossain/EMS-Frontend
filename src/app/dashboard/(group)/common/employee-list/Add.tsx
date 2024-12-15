@@ -7,11 +7,12 @@ import { DESIGNATION_OPTIONS } from "@/constants/designation";
 import { QueryKey } from "@/constants/queryKey";
 import { getDepartmentSelectOptions } from "@/queries/department";
 import { addEmployee } from "@/queries/employee";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Modal } from "antd";
 import toast from "react-hot-toast";
 
 export default function AddEmployee({ isModalOpen, setIsModalOpen }) {
+  const queryClient = useQueryClient()
   const { isPending: isDeptPending, data: deptOptions } = useQuery({
     queryFn: getDepartmentSelectOptions,
     queryKey: [QueryKey.department],
@@ -24,6 +25,7 @@ export default function AddEmployee({ isModalOpen, setIsModalOpen }) {
         return;
       }
 
+      queryClient.invalidateQueries({queryKey: [QueryKey.employee]})
       toast.success(res.message);
     },
     onError: (err) => {

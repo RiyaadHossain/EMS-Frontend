@@ -16,5 +16,5 @@ export default function DashboardHome() {
   if (userRole == USER_ROLE.Admin) return <AdminHome />;
   if (userRole == USER_ROLE.Manager) return <ManagerHome />;
   if (userRole == USER_ROLE.Employee) return <EmployeeHome />;
-  redirect("/auth/login");
+  redirect(PAGE_URL.Login);
 }

@@ -14,16 +14,21 @@ const ActiveManager = () => {
   const { isPending, data } = useQuery({ queryFn: getManagers, queryKey: [QueryKey.manager] })
   if (isPending) return <Loading />
 
+  const managers = data?.data?.slice(0,6)
+
   return (
     <>
       <Typography.Title level={4}>Active Managers</Typography.Title>
       <List
         itemLayout="horizontal"
-        dataSource={data?.data}
+        dataSource={managers}
         renderItem={(manager:any) => (
           <List.Item>
             <List.Item.Meta
-              avatar={<Avatar style={{ backgroundColor: '#87d068' }}>{manager?.name[0]}</Avatar>}
+              avatar={<Avatar  style={{
+                backgroundColor: "#1890ff", // Bright blue for contrast
+                color: "#fff", // White text inside avatar
+              }}>{manager?.name[0]}</Avatar>}
               title={
                 <Button onClick={() => setIsModalOpen(manager?.employeeId)} type="link" style={{ padding: 0 }}>
                   {manager?.name}

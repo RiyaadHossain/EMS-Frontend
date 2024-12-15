@@ -15,7 +15,7 @@ export const getEmployeeDetails = async (id: string) => {
 };
 
 // Fetch employee select options by department
-export const getEmployeeSelectOptions = async (department: string) => {
+export const getEmployeeSelectOptions = async (department?: string) => {
   return await apiClient(
     `${baseApi + employeeBase}/get-select-options/${department}`,
     { method: "GET" }

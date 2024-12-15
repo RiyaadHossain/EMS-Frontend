@@ -13,7 +13,6 @@ export default function ProjectDetails({ isModalOpen, setIsModalOpen }) {
   const { isPending, data } = useQuery({ queryFn: () => getProjectDetails(isModalOpen), queryKey: [QueryKey.manager, isModalOpen], enabled: !!isModalOpen })
   if (isPending && isModalOpen) return <Loading />
 
-  console.log(data);
   const project = data?.data
 
   return (

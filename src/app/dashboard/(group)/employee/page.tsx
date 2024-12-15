@@ -1,9 +1,9 @@
 "use client"
 import { Row, Col } from "antd"
 import WelcomeSection from "../components/WelcomeSection";
-import RunningProjects from "../components/RunningProject";
 import AttendanceSheet from "../components/AttendanceSheet";
 import WorkingTask from "./components/WorkingTask";
+import MyManager from "./components/MyManager";
 
 export default function EmployeeHome() {
   return (
@@ -14,10 +14,11 @@ export default function EmployeeHome() {
       {/* Section 2: Running Projects and Active Employee */}
       <Row gutter={16} style={{ marginTop: "24px" }}>
         <Col span={14}>
-          <RunningProjects />
+          <WorkingTask/>
         </Col>
         <Col span={10}>
-          <WorkingTask/>
+          {/* <RunningProjects /> */}
+          <MyManager/>
         </Col>
       </Row>
 

@@ -17,10 +17,13 @@ const statusColors = {
 const RunningProjects = () => {
   const [isModalOpen, setIsModalOpen] = useState("");
 
-  const { isPending, data } = useQuery({ queryFn: () => getProjects(), queryKey: [QueryKey.project] })
-  if (isPending) return <Loading />
+  const { isPending, data } = useQuery({
+    queryFn: () => getProjects(),
+    queryKey: [QueryKey.project],
+  });
+  if (isPending) return <Loading />;
 
-  const projects = (data?.data?.data);
+  const projects = data?.data?.data?.slice(0, 6);
 
   return (
     <>
@@ -28,10 +31,18 @@ const RunningProjects = () => {
       <List
         itemLayout="horizontal"
         dataSource={projects}
-        renderItem={(project:any) => (
+        renderItem={(project: any) => (
           <List.Item>
             <List.Item.Meta
-              title={<Button type="link" style={{padding:0}} onClick={() => setIsModalOpen(project.id)}>{project.projectName}</Button >}
+              title={
+                <Button
+                  type="link"
+                  style={{ padding: 0 }}
+                  onClick={() => setIsModalOpen(project.id)}
+                >
+                  {project.projectName}
+                </Button>
+              }
               description={
                 <Tag color={statusColors[project.status]}>{project.status}</Tag>
               }
@@ -40,7 +51,12 @@ const RunningProjects = () => {
         )}
       />
       <Link href="/dashboard/admin/projects-list">
-        <Button style={{padding:0}} type="link" icon={<ArrowRightOutlined />} iconPosition="end">
+        <Button
+          style={{ padding: 0 }}
+          type="link"
+          icon={<ArrowRightOutlined />}
+          iconPosition="end"
+        >
           See All
         </Button>
       </Link>

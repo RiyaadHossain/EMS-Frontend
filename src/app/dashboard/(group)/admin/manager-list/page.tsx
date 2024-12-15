@@ -17,7 +17,6 @@ export default function ManagerList() {
   if (isPending) return <Loading />;
 
   const dataSource = data?.data
-  console.log(dataSource);
   const columns = [
     {
       title: "ID",

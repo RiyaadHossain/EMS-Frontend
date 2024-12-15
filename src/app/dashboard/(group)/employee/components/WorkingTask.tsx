@@ -1,12 +1,10 @@
 import { Typography, List, Tag, Button } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import Link from "next/link";
-
-const projects = [
-  { name: "Task 1", status: "To Do", id: 1 },
-  { name: "Task 2", status: "Completed", id: 2 },
-  { name: "Task 3", status: "To Do", id: 3 },
-];
+import { useQuery } from "@tanstack/react-query";
+import { getTasks } from "@/queries/task";
+import { QueryKey } from "@/constants/queryKey";
+import Loading from "@/components/loading/Loading";
 
 const statusColors = {
   "In Progress": "processing",
@@ -15,6 +13,13 @@ const statusColors = {
 };
 
 const WorkingTask = () => {
+  const { isPending, data } = useQuery({
+    queryFn: getTasks,
+    queryKey: [QueryKey.task],
+  });
+  if (isPending) return <Loading />;
+
+  const projects = data?.data?.slice(0, 6);
 
   return (
     <>
@@ -22,10 +27,14 @@ const WorkingTask = () => {
       <List
         itemLayout="horizontal"
         dataSource={projects}
-        renderItem={(project) => (
+        renderItem={(project: any) => (
           <List.Item>
             <List.Item.Meta
-              title={<Button type="link" style={{padding:0}}>{project.name}</Button >}
+              title={
+                <Button type="link" style={{ padding: 0 }}>
+                  {project.name}
+                </Button>
+              }
               description={
                 <Tag color={statusColors[project.status]}>{project.status}</Tag>
               }
@@ -34,7 +43,12 @@ const WorkingTask = () => {
         )}
       />
       <Link href="/dashboard/employee/task-list">
-        <Button style={{padding:0}} type="link" icon={<ArrowRightOutlined />} iconPosition="end">
+        <Button
+          style={{ padding: 0 }}
+          type="link"
+          icon={<ArrowRightOutlined />}
+          iconPosition="end"
+        >
           See All
         </Button>
       </Link>

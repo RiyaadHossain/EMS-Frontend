@@ -1,3 +1,4 @@
+'use client'
 import { jwtDecode } from "jwt-decode";
 import { getToken } from "./localStorage";
 import { CustomJwtPayload } from "@/interfaces/jwt";

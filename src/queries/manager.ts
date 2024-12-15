@@ -19,3 +19,10 @@ export const getManagerSelectOptions = async () => {
     method: "GET",
   });
 };
+
+// Fetch my manager 
+export const getMyManager = async () => {
+  return await apiClient(`${baseApi + managerBase}/my-manager`, {
+    method: "GET",
+  });
+};

@@ -26,7 +26,7 @@ const StatsCards = () => {
           <Card
             style={{
               textAlign: 'center',
-              backgroundColor: '#f9f9f9',
+              // backgroundColor: '#f9f9f9',
               borderRadius: '8px',
               padding: '16px',
             }}

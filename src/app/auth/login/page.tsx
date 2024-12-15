@@ -27,7 +27,7 @@ export default function LogIn() {
     },
   });
 
-  const onFinishFailed = () => toast.error("Something went wrong!");
+  const onFinishFailed = () => toast.error("Try again later!");
 
   return (
     <div className="flex items-center justify-center h-[100vh]">

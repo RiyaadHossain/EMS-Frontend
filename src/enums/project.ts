@@ -1,5 +1,10 @@
 export enum PROJECT_STATUS {
-    TO_DO = 'to-do',
-    IN_PROGRESS = 'in-progress',
-    COMPLETED = 'completed',
+    TO_DO = "To Do",
+    IN_PROGRESS = "In Progress",
+    COMPLETED = "Completed"
+}
+
+export enum TASK_STATUS {
+    TO_DO = "To Do",
+    COMPLETED = "Completed"
 }

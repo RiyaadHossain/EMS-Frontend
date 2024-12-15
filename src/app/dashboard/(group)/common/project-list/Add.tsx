@@ -30,7 +30,7 @@ export default function AddProject({ isModalOpen, setIsModalOpen }) {
     },
   });
 
-  if(isPending) return <Loading/>
+  if(isPending && isModalOpen) return <Loading/>
 
   const onFinish = (values: any) => {
     mutation.mutate(values);
@@ -38,8 +38,6 @@ export default function AddProject({ isModalOpen, setIsModalOpen }) {
   };
 
   const onFinishFailed = () => toast.error("Something went wrong")
-
-  console.log(deptOptions);
 
   return (
     <Modal

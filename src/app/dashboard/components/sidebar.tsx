@@ -1,14 +1,18 @@
 "use client";
 import React from "react";
 import { Menu, Layout } from "antd";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { getSidebarLinks } from "../utils/getSidebarLinks";
 import { getUserInfo } from "@/helpers/jwt";
+import { PAGE_URL } from "@/enums/pageUrl";
 
-const userInfo = getUserInfo()
 
-const items = getSidebarLinks(userInfo.role);
 export default function Sidebar() {
+  const userInfo = getUserInfo()
+  if(!userInfo) redirect(PAGE_URL.Login)
+
+  const items = getSidebarLinks(userInfo?.role);
+
   const router = useRouter();
 
   const handleClick = ({ key }: { key: string }) =>

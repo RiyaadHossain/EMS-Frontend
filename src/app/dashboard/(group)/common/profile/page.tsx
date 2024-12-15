@@ -23,7 +23,10 @@ export default function Profile() {
     <div style={{ padding: "24px", maxWidth: "900px", margin: "auto" }}>
       <Row justify="center">
         <Col span={24} style={{ textAlign: "center" }}>
-          <Avatar size={128}><span className="text-5xl font-bold">{profileData.name.slice(0,1)}</span></Avatar>
+          <Avatar  style={{
+                    backgroundColor: "#1890ff", // Bright blue for contrast
+                    color: "#fff", // White text inside avatar
+                  }} size={128}><span className="text-5xl font-bold">{profileData.name.slice(0,1)}</span></Avatar>
           <Title style={{ margin: "16px 0", fontWeight: "bold" }}>
             {profileData.name}
           </Title>

@@ -4,7 +4,7 @@ import { baseApi } from "./base";
 const taskBase = "/task";
 
 // Fetch all tasks (for ADMIN, MANAGER, EMPLOYEE roles)
-export const getTasks = async (pagination: any, filters: any) => {
+export const getTasks = async (pagination?: any, filters?: any) => {
   const queryParams = new URLSearchParams({
     ...pagination,
     ...filters,

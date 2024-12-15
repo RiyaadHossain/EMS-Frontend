@@ -2,7 +2,7 @@
 import React from "react";
 import { NotificationFilled, PoweroffOutlined } from "@ant-design/icons";
 import { Avatar, theme, Badge, Dropdown, Layout, Button } from "antd";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getNotifications, readAllNotifications } from "@/queries/notification";
 import { QueryKey } from "@/constants/queryKey";
 import Loading from "@/components/loading/Loading";
@@ -11,13 +11,12 @@ import { deleteToken } from "@/helpers/localStorage";
 import { useRouter } from "next/navigation";
 import { PAGE_URL } from "@/enums/pageUrl";
 
-export default function Header() {
+export default function Header({userData}) {
 const {
   token: { colorBgContainer },
 } = theme.useToken();
 
   const router = useRouter();
-  const queryClient = useQueryClient();
 
   const { isPending, data } = useQuery({
     queryFn: getNotifications,
@@ -26,9 +25,6 @@ const {
 
   const notificion = useMutation({
     mutationFn: readAllNotifications,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKey.notification] });
-    },
   });
 
   if (isPending) return <Loading />;
@@ -80,7 +76,7 @@ const {
             size="large"
             gap={1}
           >
-            {"R"}
+            {userData?.name[0]}
           </Avatar>
         </Dropdown>
       </div>

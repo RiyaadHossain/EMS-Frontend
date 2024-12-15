@@ -32,7 +32,10 @@ export default function EmployeeDetails({ isModalOpen, setIsModalOpen }) {
           <Col span={6}>
             <Avatar
               size={128}
-              style={{ backgroundColor: "#1890ff", color: "#fff" }}
+              style={{
+                backgroundColor: "#1890ff", // Bright blue for contrast
+                color: "#fff", // White text inside avatar
+              }}
             >
               <span className="text-5xl font-bold">
                 {profileData?.name.slice(0, 1)}

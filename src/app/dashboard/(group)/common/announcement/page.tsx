@@ -38,7 +38,10 @@ const announcements = data?.data
           renderItem={(item:any) => (
             <List.Item>
               <List.Item.Meta
-                avatar={<Avatar>{item.username.slice(0, 1)}</Avatar>}
+                avatar={<Avatar  style={{
+                  backgroundColor: "#1890ff", // Bright blue for contrast
+                  color: "#fff", // White text inside avatar
+                }}>{item.username.slice(0, 1)}</Avatar>}
                 title={
                   <div
                     style={{
@@ -47,7 +50,7 @@ const announcements = data?.data
                       alignItems: "center",
                     }}
                   >
-                    <Typography.Text style={{ fontWeight: 600, color: "#000" }}>
+                    <Typography.Text style={{ fontWeight: 600, color: "#d0d0d0" }}>
                       {item.username}
                     </Typography.Text>
                     <Typography.Text

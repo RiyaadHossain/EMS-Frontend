@@ -1,34 +1,68 @@
-import { List, Typography, Avatar,Button } from 'antd';
-import { ArrowRightOutlined } from '@ant-design/icons';
-import Link from 'next/link';
-
-const employees = [
-  { name: 'Alice Johnson', department: 'Operations', id: 1 },
-  { name: 'Bob Smith', department: 'Development', id: 2 },
-];
+import { List, Typography, Avatar, Button } from "antd";
+import { ArrowRightOutlined } from "@ant-design/icons";
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { getEmployees } from "@/queries/employee";
+import { QueryKey } from "@/constants/queryKey";
+import Loading from "@/components/loading/Loading";
+import { useState } from "react";
+import EmployeeDetails from "../../components/modals/EmployeeDetails";
 
 const ActiveEmployee = () => {
+  const [isModalOpen, setIsModalOpen] = useState("");
+  const { isPending, data } = useQuery({
+    queryFn: getEmployees,
+    queryKey: [QueryKey.employee],
+  });
+  if (isPending) return <Loading />;
+
+  const employees = data?.data?.data?.slice(0, 6);
+
   return (
     <>
       <Typography.Title level={4}>Active Employees</Typography.Title>
       <List
         itemLayout="horizontal"
         dataSource={employees}
-        renderItem={(employee) => (
+        renderItem={(employee: any) => (
           <List.Item>
             <List.Item.Meta
-              avatar={<Avatar style={{ backgroundColor: '#87d068' }}>{employee.name[0]}</Avatar>}
+              avatar={
+                <Avatar  style={{
+                  backgroundColor: "#1890ff", // Bright blue for contrast
+                  color: "#fff", // White text inside avatar
+                }}>
+                  {employee.name[0]}
+                </Avatar>
+              }
               title={
-                <Link href={`/dashboard/common/employee-details/${employee.id}`} style={{ color: '#1890ff', fontWeight: 'bold' }}>
+                <Button
+                  onClick={() => setIsModalOpen(employee.id)}
+                  type="link"
+                  style={{ padding: 0 }}
+                >
                   {employee.name}
-                </Link>
+                </Button>
               }
               description={`Department: ${employee.department}`}
             />
           </List.Item>
         )}
       />
-       <Link href="/dashboard/common/employee-list"><Button style={{padding:0}} type="link" icon={<ArrowRightOutlined/>} iconPosition="end">See All</Button></Link>
+      <Link href="/dashboard/common/employee-list">
+        <Button
+          style={{ padding: 0 }}
+          type="link"
+          icon={<ArrowRightOutlined />}
+          iconPosition="end"
+        >
+          See All
+        </Button>
+      </Link>
+      <EmployeeDetails
+        setIsModalOpen={setIsModalOpen}
+        isModalOpen={isModalOpen}
+      />
     </>
   );
 };
