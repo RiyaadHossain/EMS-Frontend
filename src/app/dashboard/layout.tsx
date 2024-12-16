@@ -9,7 +9,6 @@ import { getMyProfile } from "@/queries/profile";
 import { QueryKey } from "@/constants/queryKey";
 import Loading from "@/components/loading/Loading";
 import { deleteToken } from "@/helpers/localStorage";
-import toast from "react-hot-toast";
 import { PAGE_URL } from "@/enums/pageUrl";
 import { redirect } from "next/navigation";
 
@@ -25,7 +24,6 @@ const DashboardLayout: React.FC = ({ children }: any) => {
   if (isError)
   {
     deleteToken()
-    toast.error("Something went wrong!")
     redirect(PAGE_URL.Login)
   }
 
