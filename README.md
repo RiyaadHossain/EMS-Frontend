@@ -22,7 +22,7 @@ Access the live application here: [EMS Live](https://ems-riyad.vercel.app/)
 Watch the full walkthrough of EMS: [YouTube Demo](https://youtu.be/gm2Uy1G-I6w)  
 
 ## 🔗 Server Code  
-Get the server code here: [EMS Live](https://github.com/RiyaadHossain/EMS-Backend)  
+Get the server code here: [Server Code](https://github.com/RiyaadHossain/EMS-Backend)  
 
 ---
 
